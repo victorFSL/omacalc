@@ -84,8 +84,15 @@ Rectangle {
             context.closePath();
             context.stroke();
 
-            // The x inside.
-            var cx = notch + (w - notch) / 2;
+            // The x inside, centered on the keycap's visual mass (rect body
+            // plus its tapered tip) rather than just the rectangular body —
+            // otherwise the tip's extra area on the left makes the x read
+            // as shifted right.
+            var rectArea = (w - 1 - notch) * (h - 2);
+            var rectCx = (notch + w - 1) / 2;
+            var tipArea = 0.5 * (notch - 1) * (h - 2);
+            var tipCx = (2 * notch + 1) / 3;
+            var cx = (rectArea * rectCx + tipArea * tipCx) / (rectArea + tipArea);
             var cy = h / 2;
             var arm = h * 0.18;
             context.beginPath();
