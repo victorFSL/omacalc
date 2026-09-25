@@ -87,12 +87,17 @@ Rectangle {
             // The x inside, centered on the keycap's visual mass (rect body
             // plus its tapered tip) rather than just the rectangular body —
             // otherwise the tip's extra area on the left makes the x read
-            // as shifted right.
+            // as shifted right. The tip is weighted at half its true area:
+            // a thin pointed tail reads as less "solid" than its geometric
+            // area suggests (matching how other tagged/backspace glyphs are
+            // conventionally centered), so a full area-weighted centroid
+            // over-corrects and pulls the x too far left.
             var rectArea = (w - 1 - notch) * (h - 2);
             var rectCx = (notch + w - 1) / 2;
-            var tipArea = 0.5 * (notch - 1) * (h - 2);
+            var tipTrueArea = 0.5 * (notch - 1) * (h - 2);
             var tipCx = (2 * notch + 1) / 3;
-            var cx = (rectArea * rectCx + tipArea * tipCx) / (rectArea + tipArea);
+            var tipWeight = 0.5 * tipTrueArea;
+            var cx = (rectArea * rectCx + tipWeight * tipCx) / (rectArea + tipWeight);
             var cy = h / 2;
             var arm = h * 0.18;
             context.beginPath();
